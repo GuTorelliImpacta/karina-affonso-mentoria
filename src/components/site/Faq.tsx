@@ -21,8 +21,9 @@ const items = [
   },
   {
     q: "Como começo?",
-    a: "Preenchendo o formulário de triagem abaixo. Em seguida, a equipe da Karina entra em contato pelo WhatsApp.",
+    a: "Preenchendo o formulário de triagem abaixo. Em seguida, eu entro em contato com você pelo WhatsApp.",
   },
+
 ];
 
 export function Faq() {
