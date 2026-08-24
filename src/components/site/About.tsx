@@ -14,9 +14,12 @@ export function About() {
   return (
     <Section id="sobre">
       <div className="grid items-center gap-12 md:grid-cols-[0.85fr_1fr] md:gap-16">
-        <PortraitPlaceholder
+        <Portrait
+          src={movimento.url}
+          alt="Karina Affonso em treino de canoagem, movimento e estilo de vida"
           className="mx-auto max-w-sm"
-          label="Foto da Karina — inserir imagem real (P&B)"
+          objectPosition="center 30%"
+          grayscale
         />
 
         <div>
