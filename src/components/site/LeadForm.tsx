@@ -244,24 +244,20 @@ export function LeadForm() {
                   </fieldset>
 
                   <Field
-                    label="Faixa de investimento mensal (opcional)"
-                    htmlFor="investimento"
+                    label="Quer contar um pouco mais sobre seu objetivo com a mentoria? (opcional)"
+                    htmlFor="detalhes"
                   >
-                    <select
-                      id="investimento"
-                      name="investimento"
-                      className={fieldClass}
-                      value={data.investimento}
-                      onChange={(e) => set("investimento")(e.target.value)}
-                    >
-                      <option value="">Selecione</option>
-                      {investimentos.map((o) => (
-                        <option key={o} value={o}>
-                          {o}
-                        </option>
-                      ))}
-                    </select>
+                    <textarea
+                      id="detalhes"
+                      name="detalhes"
+                      rows={4}
+                      className={`${fieldClass} min-h-[120px] resize-y py-3 leading-relaxed`}
+                      placeholder="Fique à vontade para escrever com suas palavras — o que você sente hoje e o que gostaria de mudar."
+                      value={data.detalhes}
+                      onChange={(e) => set("detalhes")(e.target.value)}
+                    />
                   </Field>
+
                 </>
               )}
 
