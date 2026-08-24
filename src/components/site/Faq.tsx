@@ -1,13 +1,28 @@
 import { useState } from "react";
-import { Section, SectionHeading, PlaceholderNote } from "./primitives";
+import { Section, SectionHeading } from "./primitives";
 import { PlusIcon } from "./icons";
 
 const items = [
-  { q: "A mentoria é online ou presencial?", note: "inserir resposta exata do briefing [confirmar formato exato]" },
-  { q: "Vou precisar cortar tudo o que gosto?", note: "inserir resposta exata do briefing" },
-  { q: "A dieta será sempre a mesma?", note: "inserir resposta exata do briefing" },
-  { q: "Para quem é a mentoria?", note: "inserir resposta exata do briefing" },
-  { q: "Como começo?", note: "inserir resposta exata do briefing" },
+  {
+    q: "A mentoria é online ou presencial?",
+    a: "O acompanhamento é ao vivo e online, com encontros presenciais periódicos da comunidade. [confirmar formato exato]",
+  },
+  {
+    q: "Vou precisar cortar tudo o que gosto?",
+    a: "Não. Aqui não existe terrorismo alimentar: você come o que gosta, na medida e no horário certos.",
+  },
+  {
+    q: "A dieta será sempre a mesma?",
+    a: "Não. Seu corpo, sua rotina e seus objetivos mudam — e a estratégia evolui junto, com ajustes constantes.",
+  },
+  {
+    q: "Para quem é a mentoria?",
+    a: "Para mulheres que querem resultados duradouros, entender o próprio corpo e construir uma relação leve com a comida.",
+  },
+  {
+    q: "Como começo?",
+    a: "Preenchendo o formulário de triagem abaixo. Em seguida, a equipe da Karina entra em contato pelo WhatsApp.",
+  },
 ];
 
 export function Faq() {
@@ -43,7 +58,9 @@ export function Faq() {
                 </button>
               </h3>
               <div id={`faq-panel-${i}`} hidden={!isOpen} className="pb-6">
-                <PlaceholderNote>{item.note}</PlaceholderNote>
+                <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                  {item.a}
+                </p>
               </div>
             </div>
           );

@@ -1,11 +1,27 @@
-import { Section, SectionHeading, Divider, PlaceholderNote } from "./primitives";
+import { Section, SectionHeading, Divider } from "./primitives";
 import { CycleIcon, HeartIcon, LeafIcon, SparkIcon } from "./icons";
 
 const cards = [
-  { icon: LeafIcon, title: "Busca emagrecimento sustentável" },
-  { icon: SparkIcon, title: "Quer melhorar sua relação com a comida" },
-  { icon: CycleIcon, title: "Quer mais energia e disposição" },
-  { icon: HeartIcon, title: "Busca saúde, prevenção ou acompanhamento oncológico" },
+  {
+    icon: LeafIcon,
+    title: "Busca resultados, mas não quer viver de dieta.",
+    text: "Coma o que você gosta, na quantidade certa e no horário certo. Sem radicalismos, sem terrorismo alimentar.",
+  },
+  {
+    icon: SparkIcon,
+    title: "Quer entender o seu corpo e as suas escolhas.",
+    text: "Você aprende o porquê de cada alimento e ganha autonomia para cuidar de si em qualquer situação.",
+  },
+  {
+    icon: CycleIcon,
+    title: "Quer uma boa relação com a comida, a mente e o corpo.",
+    text: "Alimentação não é só caloria: é prazer, cultura, memória, afeto e saúde.",
+  },
+  {
+    icon: HeartIcon,
+    title: "Gosta de sentir os benefícios de se alimentar bem.",
+    text: "Mais energia, mais disposição, melhor digestão, mais força e mais confiança.",
+  },
 ];
 
 export function ForYou() {
@@ -16,7 +32,7 @@ export function ForYou() {
         <Divider />
       </div>
       <ul className="mt-10 grid gap-6 sm:grid-cols-2">
-        {cards.map(({ icon: Icon, title }) => (
+        {cards.map(({ icon: Icon, title, text }) => (
           <li
             key={title}
             className="rounded-sm bg-card p-7 shadow-soft transition-transform duration-300 will-change-transform hover:-translate-y-1"
@@ -24,10 +40,10 @@ export function ForYou() {
             <span className="icon-badge">
               <Icon />
             </span>
-            <h3 className="mt-5 text-xl leading-snug text-foreground">{title}</h3>
-            <div className="mt-4">
-              <PlaceholderNote>inserir texto completo do card — briefing</PlaceholderNote>
-            </div>
+            <h3 className="mt-5 font-display text-xl leading-snug text-foreground">
+              {title}
+            </h3>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{text}</p>
           </li>
         ))}
       </ul>
