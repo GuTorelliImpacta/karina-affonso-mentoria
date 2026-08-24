@@ -1,4 +1,4 @@
-import { Section, SectionHeading } from "./primitives";
+import { Section, SectionHeading, CtaButton } from "./primitives";
 
 type Story = { quote: string; author: string };
 
