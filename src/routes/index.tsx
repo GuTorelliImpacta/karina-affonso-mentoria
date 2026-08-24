@@ -13,11 +13,13 @@ import { Footer } from "@/components/site/Footer";
 const title =
   "Karina Affonso | Nutricionista Funcional e Oncológica — Mentoria de Nutrição";
 const description =
-  "Mentoria de nutrição feminina com Karina Affonso, nutricionista funcional e oncológica. Cuidado individualizado, com ciência e acolhimento.";
+  "Mentoria de nutrição feminina com Karina Affonso, nutricionista funcional e oncológica: acompanhamento personalizado, humano e transformador.";
 
 export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
+    // og:image/twitter:image ficam de fora até a foto real da Karina ser
+    // fornecida (URL absoluta https). Nenhuma imagem fictícia é usada.
     meta: [
       { title },
       { name: "description", content: description },

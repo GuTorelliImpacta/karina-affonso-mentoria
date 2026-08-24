@@ -1,28 +1,13 @@
 import { useState } from "react";
-import { Section, SectionHeading } from "./primitives";
+import { Section, SectionHeading, PlaceholderNote } from "./primitives";
 import { PlusIcon } from "./icons";
 
 const items = [
-  {
-    q: "A mentoria é individual?",
-    a: "Sim. Todo o processo é conduzido de forma individualizada, a partir da sua história, rotina e objetivo.",
-  },
-  {
-    q: "Os atendimentos são online?",
-    a: "Os encontros acontecem de forma remota, o que permite acompanhar mulheres de diferentes cidades.",
-  },
-  {
-    q: "Preciso levar exames?",
-    a: "Se você tiver exames recentes, eles ajudam na avaliação. Caso não tenha, isso é conversado na etapa inicial.",
-  },
-  {
-    q: "Atende pacientes em tratamento oncológico?",
-    a: "Sim. O suporte nutricional é feito de forma integrada ao tratamento conduzido pela sua equipe médica.",
-  },
-  {
-    q: "Como sei se a mentoria é para mim?",
-    a: "O formulário de triagem existe justamente para isso: a partir das suas respostas avaliamos se faz sentido seguirmos juntas.",
-  },
+  { q: "A mentoria é online ou presencial?", note: "inserir resposta exata do briefing [confirmar formato exato]" },
+  { q: "Vou precisar cortar tudo o que gosto?", note: "inserir resposta exata do briefing" },
+  { q: "A dieta será sempre a mesma?", note: "inserir resposta exata do briefing" },
+  { q: "Para quem é a mentoria?", note: "inserir resposta exata do briefing" },
+  { q: "Como começo?", note: "inserir resposta exata do briefing" },
 ];
 
 export function Faq() {
@@ -57,12 +42,8 @@ export function Faq() {
                   </span>
                 </button>
               </h3>
-              <div
-                id={`faq-panel-${i}`}
-                hidden={!isOpen}
-                className="pb-6 text-sm leading-relaxed text-muted-foreground"
-              >
-                {item.a}
+              <div id={`faq-panel-${i}`} hidden={!isOpen} className="pb-6">
+                <PlaceholderNote>{item.note}</PlaceholderNote>
               </div>
             </div>
           );
