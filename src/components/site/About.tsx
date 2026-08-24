@@ -1,5 +1,6 @@
 import { Section } from "./primitives";
-import { PortraitPlaceholder } from "./PortraitPlaceholder";
+import { Portrait } from "./Portrait";
+import movimento from "@/assets/karina-movimento.png.asset.json";
 
 const credenciais = [
   "Nutrição funcional e oncológica",
