@@ -1,24 +1,62 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
+import { Header } from "@/components/site/Header";
+import { Hero } from "@/components/site/Hero";
+import { ForYou } from "@/components/site/ForYou";
+import { About } from "@/components/site/About";
+import { HowItWorks } from "@/components/site/HowItWorks";
+import { Stories } from "@/components/site/Stories";
+import { Faq } from "@/components/site/Faq";
+import { LeadForm } from "@/components/site/LeadForm";
+import { Footer } from "@/components/site/Footer";
+
+const title =
+  "Karina Affonso | Nutricionista Funcional e Oncológica — Mentoria de Nutrição";
+const description =
+  "Mentoria de nutrição feminina com Karina Affonso, nutricionista funcional e oncológica. Cuidado individualizado, com ciência e acolhimento.";
+
 export const Route = createFileRoute("/")({
   component: Index,
+  head: () => ({
+    meta: [
+      { title },
+      { name: "description", content: description },
+      { property: "og:title", content: title },
+      { property: "og:description", content: description },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "/" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [{ rel: "canonical", href: "/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ProfessionalService",
+          name: "Karina Affonso — Nutrição Funcional e Oncológica",
+          description,
+          areaServed: "BR",
+        }),
+      },
+    ],
+  }),
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <>
+      <Header />
+      <main>
+        <Hero />
+        <ForYou />
+        <About />
+        <HowItWorks />
+        <Stories />
+        <Faq />
+        <LeadForm />
+      </main>
+      <Footer />
+    </>
   );
 }
