@@ -1,55 +1,58 @@
 import { useState } from "react";
 import { PlaceholderNote } from "./primitives";
-import { ArrowIcon, LockIcon } from "./icons";
+import { ArrowIcon } from "./icons";
 
 /**
  * Substitua SEUNUMERO pelo WhatsApp com DDI + DDD (ex.: 5511999999999).
- * Nenhum backend é necessário: o lead é enviado via WhatsApp.
+ * Nenhum backend é necessário: o lead segue para o WhatsApp da equipe.
  */
 const WHATSAPP_NUMBER = "SEUNUMERO";
 
 /**
- * Opcional: para persistir leads (Lovable Cloud / webhook), implemente aqui.
- * Não ativado por falta de dados de destino.
+ * TODO (integração futura): persistir o lead antes do redirecionamento
+ * (Lovable Cloud ou webhook). Não implementado — aguardando destino/dados.
  */
-// async function persistLead(data: FormState) {}
 
 type FormState = {
   nome: string;
   whatsapp: string;
-  email: string;
+  idade: string;
   objetivo: string;
-  momento: string;
-  mensagem: string;
+  acompanhamentoAnterior: string;
+  investimento: string;
 };
 
 const objetivos = [
-  "Nutrição funcional e saúde geral",
-  "Suporte nutricional oncológico",
-  "Fase de transição (ciclos, gestação, climatério)",
-  "Relação com a comida e escolhas conscientes",
+  "Emagrecimento sustentável",
+  "Melhorar minha relação com a comida",
+  "Mais energia e disposição",
+  "Saúde e prevenção",
+  "Acompanhamento nutricional oncológico",
+  "Outro",
 ];
 
-const momentos = [
-  "Quero começar agora",
-  "Estou avaliando",
-  "Já fiz acompanhamento antes",
+const investimentos = [
+  "Até R$ 500",
+  "R$ 500–1.500",
+  "R$ 1.500–3.000",
+  "Acima de R$ 3.000",
+  "Prefiro conversar",
 ];
 
 const empty: FormState = {
   nome: "",
   whatsapp: "",
-  email: "",
+  idade: "",
   objetivo: "",
-  momento: "",
-  mensagem: "",
+  acompanhamentoAnterior: "",
+  investimento: "",
 };
 
+/** Máscara brasileira (00) 00000-0000 */
 function maskPhone(value: string) {
   const d = value.replace(/\D/g, "").slice(0, 11);
   if (d.length <= 2) return d.length ? `(${d}` : "";
-  if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
-  if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+  if (d.length <= 7) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
   return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
 }
 
@@ -67,13 +70,18 @@ export function LeadForm() {
     setErrors((e) => ({ ...e, [key]: undefined }));
   };
 
+  const waLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+    `Olá! Meu nome é ${data.nome.trim()} e meu objetivo é: ${data.objetivo}.`,
+  )}`;
+
   function validateStep1() {
     const e: Partial<Record<keyof FormState, string>> = {};
     if (data.nome.trim().length < 2) e.nome = "Informe seu nome completo.";
     if (data.whatsapp.replace(/\D/g, "").length < 10)
       e.whatsapp = "Informe um WhatsApp válido com DDD.";
-    if (!/^\S+@\S+\.\S+$/.test(data.email.trim()))
-      e.email = "Informe um e-mail válido.";
+    const idade = Number(data.idade);
+    if (!data.idade || Number.isNaN(idade) || idade < 12 || idade > 110)
+      e.idade = "Informe sua idade.";
     setErrors(e);
     return Object.keys(e).length === 0;
   }
@@ -81,7 +89,8 @@ export function LeadForm() {
   function validateStep2() {
     const e: Partial<Record<keyof FormState, string>> = {};
     if (!data.objetivo) e.objetivo = "Selecione seu objetivo principal.";
-    if (!data.momento) e.momento = "Selecione seu momento atual.";
+    if (!data.acompanhamentoAnterior)
+      e.acompanhamentoAnterior = "Selecione uma opção.";
     setErrors(e);
     return Object.keys(e).length === 0;
   }
@@ -95,11 +104,9 @@ export function LeadForm() {
     if (!validateStep2()) return;
 
     setSent(true);
-    const text = encodeURIComponent(
-      `Olá, Karina! Meu nome é ${data.nome.trim()} e meu objetivo é: ${data.objetivo}.`,
-    );
+    const link = waLink;
     window.setTimeout(() => {
-      window.location.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`;
+      window.location.href = link;
     }, 1500);
   }
 
@@ -110,13 +117,12 @@ export function LeadForm() {
       <div className="section-shell">
         <div className="mx-auto w-full max-w-[560px] rounded-sm bg-card p-7 shadow-editorial sm:p-10">
           <p className="eyebrow">Triagem</p>
-          <h2 className="display-lg mt-3 text-[2rem] leading-tight text-foreground">
-            Vamos entender o seu momento
+          <h2 className="display-lg mt-3 text-[1.9rem] leading-tight text-foreground">
+            Se você se identificou, talvez seja o momento de começar.
           </h2>
-          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-            Duas etapas rápidas. Suas respostas são lidas antes de qualquer
-            conversa.
-          </p>
+          <div className="mt-4">
+            <PlaceholderNote>inserir subtítulo exato do briefing</PlaceholderNote>
+          </div>
 
           <div className="mt-7" aria-hidden="true">
             <div className="h-[3px] w-full rounded-full bg-sand">
@@ -132,21 +138,17 @@ export function LeadForm() {
 
           {sent ? (
             <div className="mt-8" role="status" aria-live="polite">
-              <h3 className="text-2xl text-foreground">Recebido, {data.nome.split(" ")[0]}!</h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                Estamos te levando ao WhatsApp para finalizar a triagem. Se nada
-                acontecer, toque no botão abaixo.
-              </p>
+              <h3 className="text-2xl leading-snug text-foreground">
+                Recebido! Vamos te redirecionar para o WhatsApp...
+              </h3>
               <a
-                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-                  `Olá, Karina! Meu nome é ${data.nome.trim()} e meu objetivo é: ${data.objetivo}.`,
-                )}`}
+                href={waLink}
                 className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-full bg-ink px-7 text-[0.78rem] uppercase tracking-[0.18em] text-cream transition-colors hover:bg-bronze"
               >
                 Abrir WhatsApp
               </a>
               <div className="mt-6">
-                <PlaceholderNote>Configurar número do WhatsApp</PlaceholderNote>
+                <PlaceholderNote>configurar número do WhatsApp</PlaceholderNote>
               </div>
             </div>
           ) : (
@@ -171,27 +173,32 @@ export function LeadForm() {
                       inputMode="tel"
                       autoComplete="tel"
                       className={fieldClass}
-                      placeholder="(11) 91234-5678"
+                      placeholder="(00) 00000-0000"
                       value={data.whatsapp}
                       onChange={(e) => set("whatsapp")(maskPhone(e.target.value))}
                     />
                   </Field>
-                  <Field label="E-mail" error={errors.email} htmlFor="email">
+                  <Field label="Idade" error={errors.idade} htmlFor="idade">
                     <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      autoComplete="email"
+                      id="idade"
+                      name="idade"
+                      inputMode="numeric"
                       className={fieldClass}
-                      placeholder="voce@email.com"
-                      value={data.email}
-                      onChange={(e) => set("email")(e.target.value)}
+                      placeholder="00"
+                      value={data.idade}
+                      onChange={(e) =>
+                        set("idade")(e.target.value.replace(/\D/g, "").slice(0, 3))
+                      }
                     />
                   </Field>
                 </>
               ) : (
                 <>
-                  <Field label="Objetivo principal" error={errors.objetivo} htmlFor="objetivo">
+                  <Field
+                    label="Qual é o seu objetivo principal?"
+                    error={errors.objetivo}
+                    htmlFor="objetivo"
+                  >
                     <select
                       id="objetivo"
                       name="objetivo"
@@ -207,36 +214,58 @@ export function LeadForm() {
                       ))}
                     </select>
                   </Field>
-                  <Field label="Momento atual" error={errors.momento} htmlFor="momento">
+
+                  <fieldset>
+                    <legend className="mb-2 block text-[0.7rem] uppercase tracking-[0.16em] text-ink/70">
+                      Já fez acompanhamento nutricional antes?
+                    </legend>
+                    <div className="flex gap-3">
+                      {["Sim", "Não"].map((opt) => (
+                        <label
+                          key={opt}
+                          className={`inline-flex min-h-[48px] flex-1 cursor-pointer items-center justify-center gap-2 rounded-sm border px-4 text-sm transition-colors ${
+                            data.acompanhamentoAnterior === opt
+                              ? "border-bronze bg-sand"
+                              : "border-input bg-cream/40"
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="acompanhamentoAnterior"
+                            value={opt}
+                            checked={data.acompanhamentoAnterior === opt}
+                            onChange={() => set("acompanhamentoAnterior")(opt)}
+                            className="accent-bronze"
+                          />
+                          {opt}
+                        </label>
+                      ))}
+                    </div>
+                    {errors.acompanhamentoAnterior ? (
+                      <p className="mt-2 text-xs text-destructive" role="alert">
+                        {errors.acompanhamentoAnterior}
+                      </p>
+                    ) : null}
+                  </fieldset>
+
+                  <Field
+                    label="Faixa de investimento mensal (opcional)"
+                    htmlFor="investimento"
+                  >
                     <select
-                      id="momento"
-                      name="momento"
+                      id="investimento"
+                      name="investimento"
                       className={fieldClass}
-                      value={data.momento}
-                      onChange={(e) => set("momento")(e.target.value)}
+                      value={data.investimento}
+                      onChange={(e) => set("investimento")(e.target.value)}
                     >
                       <option value="">Selecione</option>
-                      {momentos.map((m) => (
-                        <option key={m} value={m}>
-                          {m}
+                      {investimentos.map((o) => (
+                        <option key={o} value={o}>
+                          {o}
                         </option>
                       ))}
                     </select>
-                  </Field>
-                  <Field
-                    label="Quer contar algo mais? (opcional)"
-                    htmlFor="mensagem"
-                  >
-                    <textarea
-                      id="mensagem"
-                      name="mensagem"
-                      rows={4}
-                      maxLength={1000}
-                      className={`${fieldClass} min-h-[112px] py-3`}
-                      placeholder="Escreva livremente"
-                      value={data.mensagem}
-                      onChange={(e) => set("mensagem")(e.target.value)}
-                    />
                   </Field>
                 </>
               )}
@@ -255,15 +284,14 @@ export function LeadForm() {
                   type="submit"
                   className="inline-flex min-h-[48px] flex-1 items-center justify-center gap-3 rounded-full bg-ink px-7 text-[0.74rem] uppercase tracking-[0.16em] text-cream transition-colors hover:bg-bronze"
                 >
-                  {step === 1 ? "Continuar" : "Enviar triagem"}
+                  {step === 1 ? "Continuar" : "Enviar e falar com a equipe"}
                   <ArrowIcon />
                 </button>
               </div>
 
-              <p className="flex items-start gap-2 pt-2 text-xs leading-relaxed text-muted-foreground">
-                <LockIcon className="mt-0.5 h-4 w-4 shrink-0 text-bronze" />
-                Suas informações são confidenciais e usadas apenas para avaliar
-                seu caso. Nada é compartilhado com terceiros.
+              <p className="pt-2 text-xs leading-relaxed text-muted-foreground">
+                🔒 Seus dados são confidenciais e usados apenas para o contato da
+                equipe.
               </p>
             </form>
           )}
