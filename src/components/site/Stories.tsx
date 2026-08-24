@@ -1,6 +1,6 @@
-import { Section, SectionHeading, PlaceholderNote } from "./primitives";
+import { Section, SectionHeading } from "./primitives";
 
-type Story = { quote?: string; author?: string };
+type Story = { quote: string; author: string };
 
 const stories: Story[] = [
   {
@@ -8,8 +8,16 @@ const stories: Story[] = [
       "Pela primeira vez sigo um acompanhamento sem sentir que estou de dieta. Aprendi a comer — e isso mudou tudo.",
     author: "M., 41",
   },
-  {},
-  {},
+  {
+    quote:
+      "Minha rotina é corrida e eu achava impossível me organizar. Hoje faço escolhas mais tranquilas no dia a dia e tenho muito mais energia à tarde.",
+    author: "R., 34",
+  },
+  {
+    quote:
+      "O que mais mudou foi a constância. Entendi o porquê de cada escolha e passei a cuidar de mim com autonomia, sem culpa.",
+    author: "A., 52",
+  },
 ];
 
 export function Stories() {
@@ -17,8 +25,12 @@ export function Stories() {
     <Section id="transformacoes" tone="sand">
       <SectionHeading eyebrow="Transformações" title="Histórias reais." />
 
+      <p className="mt-4 text-center text-[0.7rem] uppercase tracking-[0.16em] text-bronze">
+        Exemplos ilustrativos — substituir por depoimentos reais autorizados
+      </p>
+
       <div
-        className="mt-12 -mx-6 flex snap-x snap-mandatory gap-6 overflow-x-auto px-6 pb-4"
+        className="mt-10 -mx-6 flex snap-x snap-mandatory gap-6 overflow-x-auto px-6 pb-4"
         role="region"
         aria-label="Depoimentos"
         tabIndex={0}
@@ -31,22 +43,12 @@ export function Stories() {
             <span className="font-display text-4xl leading-none text-bronze" aria-hidden="true">
               &ldquo;
             </span>
-            {story.quote ? (
-              <>
-                <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                  {story.quote}
-                </p>
-                <p className="mt-5 text-[0.7rem] uppercase tracking-[0.18em] text-bronze">
-                  — {story.author}
-                </p>
-              </>
-            ) : (
-              <div className="mt-4">
-                <PlaceholderNote>
-                  inserir depoimento real autorizado
-                </PlaceholderNote>
-              </div>
-            )}
+            <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+              {story.quote}
+            </p>
+            <p className="mt-5 text-[0.7rem] uppercase tracking-[0.18em] text-bronze">
+              — {story.author}
+            </p>
           </article>
         ))}
       </div>

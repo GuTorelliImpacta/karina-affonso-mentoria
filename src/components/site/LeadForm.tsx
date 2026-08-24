@@ -1,12 +1,8 @@
 import { useState } from "react";
-import { PlaceholderNote } from "./primitives";
 import { ArrowIcon } from "./icons";
 
-/**
- * Substitua SEUNUMERO pelo WhatsApp com DDI + DDD (ex.: 5511999999999).
- * Nenhum backend é necessário: o lead segue para o WhatsApp da equipe.
- */
-const WHATSAPP_NUMBER = "SEUNUMERO";
+/** WhatsApp oficial (DDI + DDD, sem símbolos). */
+const WHATSAPP_NUMBER = "5511999708185";
 
 /**
  * TODO (integração futura): persistir o lead antes do redirecionamento
@@ -19,7 +15,7 @@ type FormState = {
   idade: string;
   objetivo: string;
   acompanhamentoAnterior: string;
-  investimento: string;
+  detalhes: string;
 };
 
 const objetivos = [
@@ -31,22 +27,15 @@ const objetivos = [
   "Outro",
 ];
 
-const investimentos = [
-  "Até R$ 500",
-  "R$ 500–1.500",
-  "R$ 1.500–3.000",
-  "Acima de R$ 3.000",
-  "Prefiro conversar",
-];
-
 const empty: FormState = {
   nome: "",
   whatsapp: "",
   idade: "",
   objetivo: "",
   acompanhamentoAnterior: "",
-  investimento: "",
+  detalhes: "",
 };
+
 
 /** Máscara brasileira (00) 00000-0000 */
 function maskPhone(value: string) {
@@ -71,8 +60,11 @@ export function LeadForm() {
   };
 
   const waLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-    `Olá! Meu nome é ${data.nome.trim()} e meu objetivo é: ${data.objetivo}.`,
+    `Olá! Meu nome é ${data.nome.trim()} e meu objetivo é: ${data.objetivo}.${
+      data.detalhes.trim() ? ` Sobre o meu objetivo: ${data.detalhes.trim()}` : ""
+    }`,
   )}`;
+
 
   function validateStep1() {
     const e: Partial<Record<keyof FormState, string>> = {};
@@ -122,8 +114,9 @@ export function LeadForm() {
           </h2>
           <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
             Preencha a triagem abaixo — leva menos de 2 minutos. Suas respostas
-            ajudam a Karina a entender se a mentoria é para você.
+            me ajudam a entender se a mentoria é para você.
           </p>
+
 
 
           <div className="mt-7" aria-hidden="true">
@@ -149,9 +142,8 @@ export function LeadForm() {
               >
                 Abrir WhatsApp
               </a>
-              <div className="mt-6">
-                <PlaceholderNote>configurar número do WhatsApp</PlaceholderNote>
-              </div>
+
+
             </div>
           ) : (
             <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-5">
@@ -251,24 +243,20 @@ export function LeadForm() {
                   </fieldset>
 
                   <Field
-                    label="Faixa de investimento mensal (opcional)"
-                    htmlFor="investimento"
+                    label="Quer contar um pouco mais sobre seu objetivo com a mentoria? (opcional)"
+                    htmlFor="detalhes"
                   >
-                    <select
-                      id="investimento"
-                      name="investimento"
-                      className={fieldClass}
-                      value={data.investimento}
-                      onChange={(e) => set("investimento")(e.target.value)}
-                    >
-                      <option value="">Selecione</option>
-                      {investimentos.map((o) => (
-                        <option key={o} value={o}>
-                          {o}
-                        </option>
-                      ))}
-                    </select>
+                    <textarea
+                      id="detalhes"
+                      name="detalhes"
+                      rows={4}
+                      className={`${fieldClass} min-h-[120px] resize-y py-3 leading-relaxed`}
+                      placeholder="Fique à vontade para escrever com suas palavras — o que você sente hoje e o que gostaria de mudar."
+                      value={data.detalhes}
+                      onChange={(e) => set("detalhes")(e.target.value)}
+                    />
                   </Field>
+
                 </>
               )}
 
