@@ -52,9 +52,6 @@ export function Stories() {
           </article>
         ))}
       </div>
-      <p className="mt-2 text-xs text-muted-foreground">
-        Arraste para o lado para ver mais.
-      </p>
     </Section>
   );
 }
