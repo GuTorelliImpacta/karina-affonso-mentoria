@@ -1,53 +1,51 @@
-import aboutPhoto from "@/assets/about-karina.jpg";
 import { Section, PlaceholderNote } from "./primitives";
+import { PortraitPlaceholder } from "./PortraitPlaceholder";
+
+const credenciais = [
+  "Nutrição funcional e oncológica",
+  "Atendimento Brasil 🇧🇷 e EUA 🇺🇸",
+  "Parceira do @nucleoatp",
+];
 
 export function About() {
   return (
     <Section id="sobre">
       <div className="grid items-center gap-12 md:grid-cols-[0.85fr_1fr] md:gap-16">
-        <figure className="relative mx-auto aspect-4/5 w-full max-w-sm overflow-hidden rounded-sm shadow-editorial">
-          <img
-            src={aboutPhoto}
-            alt="Karina Affonso em retrato preto e branco"
-            width={1024}
-            height={1280}
-            loading="lazy"
-            className="h-full w-full object-cover grayscale"
-          />
-        </figure>
+        <PortraitPlaceholder
+          className="mx-auto max-w-sm"
+          label="Foto da Karina — inserir imagem real (P&B)"
+        />
 
         <div>
           <p className="eyebrow">Sobre Karina</p>
-          <h2 className="display-lg mt-4 text-foreground">
-            Nutrição como um encontro entre ciência e escuta
-          </h2>
           <div className="mt-6 space-y-5 text-base leading-relaxed text-muted-foreground">
             <p>
-              Atuo com nutrição funcional e oncológica, acompanhando mulheres em
-              diferentes momentos da vida. Meu trabalho parte de uma escuta
-              cuidadosa da história de cada pessoa antes de qualquer conduta.
-            </p>
-            <p>
-              A proposta é simples e exigente ao mesmo tempo: construir escolhas
-              alimentares sustentáveis, alinhadas ao corpo, à rotina e aos
-              valores de quem chega — sem imposições e sem promessas rápidas.
+              Nutricionista funcional e oncológica, Karina une ciência, escuta e
+              estratégia para construir uma alimentação que caiba na sua vida — e
+              transforme a sua saúde. Atendendo entre Brasil e Estados Unidos, ela
+              acredita que corpo, mente e espírito caminham juntos, e que cuidar
+              da alimentação não significa abrir mão de viver.
             </p>
           </div>
 
-          <div className="mt-8 border-t border-bronze/30 pt-6">
-            <p className="text-[0.72rem] uppercase tracking-[0.18em] text-bronze">
-              Formação e registro
-            </p>
-            <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
-              <li className="flex flex-wrap items-center gap-3">
-                <PlaceholderNote>Inserir CRN</PlaceholderNote>
-                <span>Registro profissional a ser preenchido.</span>
+          <blockquote className="mt-8 border-l border-bronze/50 pl-5 text-2xl leading-snug text-foreground">
+            “Para mim, o alimento é sagrado.”
+          </blockquote>
+
+          <ul className="mt-8 space-y-3 border-t border-bronze/30 pt-6 text-sm text-muted-foreground">
+            {credenciais.map((c) => (
+              <li key={c} className="flex items-center gap-3">
+                <span aria-hidden="true" className="h-1 w-1 shrink-0 rounded-full bg-bronze" />
+                {c}
               </li>
-              <li className="flex flex-wrap items-center gap-3">
-                <PlaceholderNote>Inserir formação</PlaceholderNote>
-                <span>Graduação, especializações e cursos.</span>
-              </li>
-            </ul>
+            ))}
+          </ul>
+
+          <div className="mt-6">
+            <PlaceholderNote>
+              inserir CRN, formação acadêmica e especializações exatas — confirmar
+              com a Karina
+            </PlaceholderNote>
           </div>
         </div>
       </div>
