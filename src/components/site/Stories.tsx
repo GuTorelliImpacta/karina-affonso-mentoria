@@ -52,6 +52,10 @@ export function Stories() {
           </article>
         ))}
       </div>
+
+      <div className="mt-12 text-center">
+        <CtaButton variant="outline">Quero começar minha transformação</CtaButton>
+      </div>
     </Section>
   );
 }
