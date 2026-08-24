@@ -60,8 +60,11 @@ export function LeadForm() {
   };
 
   const waLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-    `Olá! Meu nome é ${data.nome.trim()} e meu objetivo é: ${data.objetivo}.`,
+    `Olá! Meu nome é ${data.nome.trim()} e meu objetivo é: ${data.objetivo}.${
+      data.detalhes.trim() ? ` Sobre o meu objetivo: ${data.detalhes.trim()}` : ""
+    }`,
   )}`;
+
 
   function validateStep1() {
     const e: Partial<Record<keyof FormState, string>> = {};
