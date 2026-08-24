@@ -1,4 +1,4 @@
-import { Section, SectionHeading } from "./primitives";
+import { Section, SectionHeading, CtaButton } from "./primitives";
 
 type Story = { quote: string; author: string };
 
@@ -52,9 +52,10 @@ export function Stories() {
           </article>
         ))}
       </div>
-      <p className="mt-2 text-xs text-muted-foreground">
-        Arraste para o lado para ver mais.
-      </p>
+
+      <div className="mt-12 text-center">
+        <CtaButton variant="outline">Quero começar minha transformação</CtaButton>
+      </div>
     </Section>
   );
 }

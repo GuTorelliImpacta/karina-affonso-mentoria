@@ -1,5 +1,6 @@
 import { CtaButton } from "./primitives";
-import { PortraitPlaceholder } from "./PortraitPlaceholder";
+import { Portrait } from "./Portrait";
+import retrato from "@/assets/karina-retrato.png.asset.json";
 
 export function Hero() {
   return (
@@ -25,7 +26,12 @@ export function Hero() {
         </div>
 
         <div className="relative">
-          <PortraitPlaceholder className="mx-auto max-w-md" />
+          <Portrait
+            src={retrato.url}
+            alt="Karina Affonso, nutricionista funcional e oncológica"
+            className="mx-auto max-w-md"
+            objectPosition="center 20%"
+          />
         </div>
       </div>
     </section>

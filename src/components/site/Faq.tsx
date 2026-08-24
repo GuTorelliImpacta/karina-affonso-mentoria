@@ -5,7 +5,7 @@ import { PlusIcon } from "./icons";
 const items = [
   {
     q: "A mentoria é online ou presencial?",
-    a: "O acompanhamento é ao vivo e online, com encontros presenciais periódicos da comunidade. [confirmar formato exato]",
+    a: "O acompanhamento é ao vivo e online, com encontros presenciais periódicos da comunidade.",
   },
   {
     q: "Vou precisar cortar tudo o que gosto?",
