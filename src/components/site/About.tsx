@@ -1,9 +1,11 @@
-import { Section, PlaceholderNote } from "./primitives";
+import { Section } from "./primitives";
 import { PortraitPlaceholder } from "./PortraitPlaceholder";
 
 const credenciais = [
   "Nutrição funcional e oncológica",
-  "Atendimento Brasil 🇧🇷 e EUA 🇺🇸",
+  "CRN3-96902",
+  "Mentorias online — Brasil 🇧🇷 e EUA 🇺🇸",
+  "Atendimento em São Paulo",
   "Parceira do @nucleoatp",
 ];
 
@@ -17,18 +19,20 @@ export function About() {
         />
 
         <div>
-          <p className="eyebrow">Sobre Karina</p>
+          <p className="eyebrow">Sobre mim</p>
           <h2 className="display-lg mt-4 text-foreground">
-            Quem é <strong className="font-semibold">Karina Affonso</strong>?
+            Prazer, eu sou a{" "}
+            <strong className="font-semibold">Karina Affonso</strong>.
           </h2>
 
           <div className="mt-6 space-y-5 text-base leading-relaxed text-muted-foreground">
             <p>
-              Nutricionista funcional e oncológica, Karina une ciência, escuta e
-              estratégia para construir uma alimentação que caiba na sua vida — e
-              transforme a sua saúde. Atendendo entre Brasil e Estados Unidos, ela
-              acredita que corpo, mente e espírito caminham juntos, e que cuidar
-              da alimentação não significa abrir mão de viver.
+              Sou nutricionista funcional e oncológica e uno ciência, escuta e
+              estratégia para construir com você uma alimentação que caiba na sua
+              vida — e transforme a sua saúde. Atendo mulheres do Brasil e dos
+              Estados Unidos em mentorias online, porque acredito que corpo,
+              mente e espírito caminham juntos, e que cuidar da alimentação não
+              significa abrir mão de viver.
             </p>
           </div>
 
@@ -44,13 +48,6 @@ export function About() {
               </li>
             ))}
           </ul>
-
-          <div className="mt-6">
-            <PlaceholderNote>
-              inserir CRN, formação acadêmica e especializações exatas — confirmar
-              com a Karina
-            </PlaceholderNote>
-          </div>
         </div>
       </div>
     </Section>
