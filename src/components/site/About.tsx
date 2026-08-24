@@ -18,6 +18,10 @@ export function About() {
 
         <div>
           <p className="eyebrow">Sobre Karina</p>
+          <h2 className="display-lg mt-4 text-foreground">
+            Quem é <strong className="font-semibold">Karina Affonso</strong>?
+          </h2>
+
           <div className="mt-6 space-y-5 text-base leading-relaxed text-muted-foreground">
             <p>
               Nutricionista funcional e oncológica, Karina une ciência, escuta e
