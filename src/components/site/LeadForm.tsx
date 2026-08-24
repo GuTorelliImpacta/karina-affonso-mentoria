@@ -142,9 +142,8 @@ export function LeadForm() {
               >
                 Abrir WhatsApp
               </a>
-              <div className="mt-6">
-                <PlaceholderNote>configurar número do WhatsApp</PlaceholderNote>
-              </div>
+
+
             </div>
           ) : (
             <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-5">
