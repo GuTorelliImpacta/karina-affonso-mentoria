@@ -1,8 +1,8 @@
 import { Section } from "./primitives";
 import { Portrait } from "./Portrait";
-import movimento from "@/assets/karina-movimento.png.asset.json";
 
 const credenciais = [
+
   "Nutrição funcional e oncológica",
   "CRN3-96902",
   "Mentorias online — Brasil 🇧🇷 e EUA 🇺🇸",
@@ -15,12 +15,13 @@ export function About() {
     <Section id="sobre">
       <div className="grid items-center gap-12 md:grid-cols-[0.85fr_1fr] md:gap-16">
         <Portrait
-          src={movimento.url}
+          src="/karina2.png"
           alt="Karina Affonso em treino de canoagem, movimento e estilo de vida"
           className="mx-auto max-w-sm"
           objectPosition="center 30%"
           grayscale
         />
+
 
         <div>
           <p className="eyebrow">Sobre mim</p>
