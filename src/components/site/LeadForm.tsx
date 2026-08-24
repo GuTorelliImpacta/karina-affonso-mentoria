@@ -1,12 +1,8 @@
 import { useState } from "react";
-import { PlaceholderNote } from "./primitives";
 import { ArrowIcon } from "./icons";
 
-/**
- * Substitua SEUNUMERO pelo WhatsApp com DDI + DDD (ex.: 5511999999999).
- * Nenhum backend é necessário: o lead segue para o WhatsApp da equipe.
- */
-const WHATSAPP_NUMBER = "SEUNUMERO";
+/** WhatsApp oficial (DDI + DDD, sem símbolos). */
+const WHATSAPP_NUMBER = "5511999708185";
 
 /**
  * TODO (integração futura): persistir o lead antes do redirecionamento
@@ -19,7 +15,7 @@ type FormState = {
   idade: string;
   objetivo: string;
   acompanhamentoAnterior: string;
-  investimento: string;
+  detalhes: string;
 };
 
 const objetivos = [
@@ -31,22 +27,15 @@ const objetivos = [
   "Outro",
 ];
 
-const investimentos = [
-  "Até R$ 500",
-  "R$ 500–1.500",
-  "R$ 1.500–3.000",
-  "Acima de R$ 3.000",
-  "Prefiro conversar",
-];
-
 const empty: FormState = {
   nome: "",
   whatsapp: "",
   idade: "",
   objetivo: "",
   acompanhamentoAnterior: "",
-  investimento: "",
+  detalhes: "",
 };
+
 
 /** Máscara brasileira (00) 00000-0000 */
 function maskPhone(value: string) {
