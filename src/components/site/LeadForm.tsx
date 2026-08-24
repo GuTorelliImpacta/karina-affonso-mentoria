@@ -114,8 +114,9 @@ export function LeadForm() {
           </h2>
           <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
             Preencha a triagem abaixo — leva menos de 2 minutos. Suas respostas
-            ajudam a Karina a entender se a mentoria é para você.
+            me ajudam a entender se a mentoria é para você.
           </p>
+
 
 
           <div className="mt-7" aria-hidden="true">
