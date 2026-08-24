@@ -120,9 +120,11 @@ export function LeadForm() {
           <h2 className="display-lg mt-3 text-[1.9rem] leading-tight text-foreground">
             Se você se identificou, talvez seja o momento de começar.
           </h2>
-          <div className="mt-4">
-            <PlaceholderNote>inserir subtítulo exato do briefing</PlaceholderNote>
-          </div>
+          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+            Preencha a triagem abaixo — leva menos de 2 minutos. Suas respostas
+            ajudam a Karina a entender se a mentoria é para você.
+          </p>
+
 
           <div className="mt-7" aria-hidden="true">
             <div className="h-[3px] w-full rounded-full bg-sand">
