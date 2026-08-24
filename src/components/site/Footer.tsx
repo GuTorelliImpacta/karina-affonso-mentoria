@@ -1,4 +1,4 @@
-import { Divider, PlaceholderNote } from "./primitives";
+import { Divider } from "./primitives";
 
 export function Footer() {
   return (
@@ -9,6 +9,9 @@ export function Footer() {
         </p>
         <p className="mt-3 text-[0.72rem] uppercase tracking-[0.2em] text-cream/70">
           Nutricionista Funcional e Oncológica
+        </p>
+        <p className="mt-2 text-[0.72rem] uppercase tracking-[0.2em] text-cream/70">
+          CRN3-96902 · São Paulo · Mentorias online
         </p>
 
         <div className="my-8 opacity-70">
@@ -23,10 +26,6 @@ export function Footer() {
         >
           Instagram @ka.affonso
         </a>
-
-        <div className="mt-6 flex justify-center">
-          <PlaceholderNote>inserir CRN e cidade de atendimento</PlaceholderNote>
-        </div>
 
         <p className="mt-8 text-xs text-cream/50">
           © 2026 Karina Affonso. Todos os direitos reservados. Desenvolvido por
