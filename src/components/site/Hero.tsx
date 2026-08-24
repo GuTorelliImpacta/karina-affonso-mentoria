@@ -1,8 +1,8 @@
 import { CtaButton } from "./primitives";
 import { Portrait } from "./Portrait";
-import retrato from "@/assets/karina-retrato.png.asset.json";
 
 export function Hero() {
+
   return (
     <section id="top" className="relative bg-cream pt-28 pb-16 md:pt-36 md:pb-24">
       <div className="section-shell grid items-center gap-12 md:grid-cols-2 md:gap-16">
@@ -27,12 +27,13 @@ export function Hero() {
 
         <div className="relative">
           <Portrait
-            src={retrato.url}
+            src="/karina.png"
             alt="Karina Affonso, nutricionista funcional e oncológica"
             className="mx-auto max-w-md"
             objectPosition="center 20%"
           />
         </div>
+
       </div>
     </section>
   );
