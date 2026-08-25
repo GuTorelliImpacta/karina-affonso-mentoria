@@ -76,7 +76,6 @@ export function LeadForm() {
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
   const [sent, setSent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const honeypot = useRef("");
   const formRef = useRef<HTMLFormElement>(null);
 
   const set = (key: keyof FormState) => (value: string) => {
@@ -136,7 +135,10 @@ export function LeadForm() {
       return;
     }
 
-    if (!checkStep(["objetivo", "acompanhamentoAnterior"])) return;
+    if (!checkStep(["objetivo", "acompanhamentoAnterior"])) {
+      event.preventDefault();
+      return;
+    }
 
     const formDataAtual = { ...data };
     console.log("Formulário submetido:", formDataAtual);
@@ -218,7 +220,6 @@ export function LeadForm() {
                     name="bot-field"
                     tabIndex={-1}
                     autoComplete="off"
-                    onChange={(e) => (honeypot.current = e.target.value)}
                   />
                 </label>
               </p>
