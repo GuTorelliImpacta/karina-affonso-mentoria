@@ -25,9 +25,8 @@ export function Stories() {
     <Section id="transformacoes" tone="sand">
       <SectionHeading eyebrow="Transformações" title="Histórias reais." />
 
-      <p className="mt-4 text-center text-[0.7rem] uppercase tracking-[0.16em] text-bronze-ink">
-        Exemplos ilustrativos — substituir por depoimentos reais autorizados
-      </p>
+      {/* TODO: substituir por depoimentos reais autorizados */}
+
 
       <div
         className="mt-10 -mx-6 flex snap-x snap-mandatory gap-6 overflow-x-auto px-6 pb-4"
