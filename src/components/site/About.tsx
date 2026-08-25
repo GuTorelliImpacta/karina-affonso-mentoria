@@ -1,5 +1,6 @@
 import { Section } from "./primitives";
 import { Portrait } from "./Portrait";
+import { InstagramIcon } from "./icons";
 
 const credenciais = [
 
