@@ -43,6 +43,7 @@ export function Header() {
   }
 
   return (
+    <>
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-500 ${
         scrolled || open
@@ -115,7 +116,8 @@ export function Header() {
         </div>
       </div>
 
-      {/* Drawer fullscreen mobile */}
+    </header>
+    {/* Drawer fullscreen mobile */}
       <div
         id="menu-mobile"
         hidden={!open}
@@ -145,6 +147,6 @@ export function Header() {
           </a>
         </nav>
       </div>
-    </header>
+    </>
   );
 }
