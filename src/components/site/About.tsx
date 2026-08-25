@@ -15,10 +15,12 @@ export function About() {
     <Section id="sobre">
       <div className="grid items-center gap-12 md:grid-cols-[0.85fr_1fr] md:gap-16">
         <Portrait
-          src="/karina2.png"
+          src="/karina2.webp"
           alt="Karina Affonso em treino de canoagem, movimento e estilo de vida"
           className="mx-auto max-w-sm"
           objectPosition="center 30%"
+          width={449}
+          height={459}
           grayscale
         />
 

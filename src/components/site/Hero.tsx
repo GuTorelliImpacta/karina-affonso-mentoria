@@ -27,10 +27,13 @@ export function Hero() {
 
         <div className="relative">
           <Portrait
-            src="/karina.png"
+            src="/karina.webp"
             alt="Karina Affonso, nutricionista funcional e oncológica"
             className="mx-auto max-w-md"
             objectPosition="center 20%"
+            width={1402}
+            height={1122}
+            priority
           />
         </div>
 

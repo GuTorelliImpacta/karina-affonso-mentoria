@@ -52,7 +52,7 @@ export function HowItWorks() {
       </ol>
 
       <div className="mt-14">
-        <CtaButton variant="outline">Quero começar minha transformação</CtaButton>
+        <CtaButton variant="outline">Quero fazer minha triagem</CtaButton>
       </div>
     </Section>
   );

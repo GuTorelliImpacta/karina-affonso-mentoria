@@ -5,6 +5,9 @@ type PortraitProps = {
   objectPosition?: string;
   grayscale?: boolean;
   caption?: string;
+  width: number;
+  height: number;
+  priority?: boolean;
 };
 
 /** Retrato editorial 4:5 com enquadramento elegante e carregamento lazy. */
@@ -15,6 +18,9 @@ export function Portrait({
   objectPosition = "center 25%",
   grayscale = false,
   caption,
+  width,
+  height,
+  priority = false,
 }: PortraitProps) {
   return (
     <figure
@@ -23,8 +29,11 @@ export function Portrait({
       <img
         src={src}
         alt={alt}
-        loading="lazy"
+        width={width}
+        height={height}
+        loading={priority ? "eager" : "lazy"}
         decoding="async"
+        {...(priority ? { fetchPriority: "high" as const } : {})}
         className={`h-full w-full object-cover transition-transform duration-700 will-change-transform hover:scale-[1.02] ${
           grayscale ? "grayscale" : ""
         }`}
