@@ -5,7 +5,7 @@ import { ArrowIcon } from "./icons";
 const WHATSAPP_NUMBER = "5511999708185";
 
 /** Nome do form usado pela captura nativa do deploy (Netlify Forms). */
-const FORM_NAME = "triagem-karina";
+const FORM_NAME = "triagem";
 
 type FormState = {
   nome: string;
@@ -40,6 +40,12 @@ function maskPhone(value: string) {
   if (d.length <= 2) return d.length ? `(${d}` : "";
   if (d.length <= 7) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
   return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+}
+
+function encode(data: Record<string, string>) {
+  return Object.entries(data)
+    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+    .join("&");
 }
 
 function validateField(key: keyof FormState, data: FormState): string | undefined {
@@ -118,7 +124,7 @@ export function LeadForm() {
 
   async function persistLead() {
     // Captura nativa do deploy (Netlify Forms) — sem backend próprio.
-    const body = new URLSearchParams({
+    const body = encode({
       "form-name": FORM_NAME,
       nome: data.nome.trim(),
       whatsapp: data.whatsapp,
@@ -126,11 +132,12 @@ export function LeadForm() {
       objetivo: data.objetivo,
       acompanhamentoAnterior: data.acompanhamentoAnterior,
       detalhes: data.detalhes.trim(),
+      "bot-field": "",
     });
     await fetch("/", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: body.toString(),
+      body,
     });
   }
 
@@ -154,7 +161,8 @@ export function LeadForm() {
     const link = waLink;
     try {
       await persistLead();
-    } catch {
+    } catch (error) {
+      console.error("Falha ao registrar lead na Netlify:", error);
       // O contato importa mais que o registro: segue para o WhatsApp.
     }
     setSent(true);
@@ -208,7 +216,7 @@ export function LeadForm() {
               name={FORM_NAME}
               method="POST"
               data-netlify="true"
-              netlify-honeypot="empresa-site"
+              netlify-honeypot="bot-field"
               onSubmit={handleSubmit}
               noValidate
               className="mt-8 space-y-5"
@@ -219,7 +227,7 @@ export function LeadForm() {
                   Não preencha este campo
                   <input
                     type="text"
-                    name="empresa-site"
+                    name="bot-field"
                     tabIndex={-1}
                     autoComplete="off"
                     onChange={(e) => (honeypot.current = e.target.value)}
