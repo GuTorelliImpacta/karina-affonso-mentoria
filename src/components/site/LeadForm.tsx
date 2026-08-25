@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowIcon } from "./icons";
 
 /** WhatsApp oficial (DDI + DDD, sem símbolos). */
@@ -42,12 +42,6 @@ function maskPhone(value: string) {
   return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
 }
 
-function encode(data: Record<string, string>) {
-  return Object.entries(data)
-    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
-    .join("&");
-}
-
 function validateField(key: keyof FormState, data: FormState): string | undefined {
   switch (key) {
     case "nome":
@@ -82,8 +76,16 @@ export function LeadForm() {
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
   const [sent, setSent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const honeypot = useRef("");
   const formRef = useRef<HTMLFormElement>(null);
+  const iframeSubmitPending = useRef(false);
+  const redirectUrl = useRef("");
+  const redirectTimer = useRef<number | undefined>(undefined);
+
+  useEffect(() => {
+    return () => {
+      if (redirectTimer.current) window.clearTimeout(redirectTimer.current);
+    };
+  }, []);
 
   const set = (key: keyof FormState) => (value: string) => {
     setData((d) => ({ ...d, [key]: value }));
@@ -126,62 +128,64 @@ export function LeadForm() {
     return invalid.length === 0;
   }
 
-  async function persistLead(formData: FormState) {
-    // Captura nativa do deploy (Netlify Forms) — sem backend próprio.
-    const response = await fetch("/", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: encode({
-        "form-name": FORM_NAME,
-        "bot-field": "",
-        nome: formData.nome.trim(),
-        whatsapp: formData.whatsapp,
-        idade: formData.idade,
-        objetivo: formData.objetivo,
-        acompanhamentoAnterior: formData.acompanhamentoAnterior,
-        detalhes: formData.detalhes.trim(),
-      }),
-    });
-
-    if (!response.ok) {
-      console.error("Netlify respondeu com erro:", response.status);
-    }
+  function handleContinue(event?: React.FormEvent<HTMLFormElement>) {
+    event?.preventDefault();
+    if (checkStep(["nome", "whatsapp", "idade"])) setStep(2);
   }
 
-  async function handleSubmit(event: React.FormEvent) {
-    event.preventDefault();
-    if (submitting) return;
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    if (submitting) {
+      event.preventDefault();
+      return;
+    }
 
     if (step === 1) {
-      if (checkStep(["nome", "whatsapp", "idade"])) setStep(2);
-      return;
-    }
-    if (!checkStep(["objetivo", "acompanhamentoAnterior"])) return;
-
-    // Honeypot: descarta silenciosamente envios automatizados.
-    if (honeypot.current.trim()) {
-      setSent(true);
+      handleContinue(event);
       return;
     }
 
-    const formData = { ...data };
+    if (!checkStep(["objetivo", "acompanhamentoAnterior"])) {
+      event.preventDefault();
+      return;
+    }
+
+    const formDataAtual = { ...data };
+    console.log("Formulário submetido:", formDataAtual);
     setSubmitting(true);
-    try {
-      await persistLead(formData);
-    } catch (error) {
-      console.error("Falha ao registrar lead na Netlify:", error);
-      // O contato importa mais que o registro: segue para o WhatsApp.
-    }
+    iframeSubmitPending.current = true;
+    redirectUrl.current = buildWhatsAppUrl(formDataAtual);
+
+    redirectTimer.current = window.setTimeout(() => {
+      finishSubmitFlow();
+    }, 3500);
+  }
+
+  function finishSubmitFlow() {
+    if (!iframeSubmitPending.current) return;
+    iframeSubmitPending.current = false;
+    if (redirectTimer.current) window.clearTimeout(redirectTimer.current);
     setSent(true);
     window.setTimeout(() => {
-      window.location.href = buildWhatsAppUrl(formData);
-    }, 1500);
+      window.location.href = redirectUrl.current;
+    }, 500);
+  }
+
+  function handleIframeLoad() {
+    finishSubmitFlow();
   }
 
   const progress = sent ? 100 : step === 1 ? 50 : 90;
 
   return (
     <section id="triagem" className="bg-sand py-20 md:py-28">
+      <iframe
+        name="hidden-form-target"
+        title="form-target"
+        className="hidden"
+        aria-hidden="true"
+        tabIndex={-1}
+        onLoad={handleIframeLoad}
+      />
       <div className="section-shell">
         <div className="mx-auto w-full max-w-[560px] rounded-sm bg-card p-7 shadow-editorial sm:p-10">
           <p className="eyebrow">Triagem</p>
@@ -222,6 +226,8 @@ export function LeadForm() {
               ref={formRef}
               name={FORM_NAME}
               method="POST"
+              action="/"
+              target="hidden-form-target"
               data-netlify="true"
               netlify-honeypot="bot-field"
               onSubmit={handleSubmit}
@@ -229,17 +235,24 @@ export function LeadForm() {
               className="mt-8 space-y-5"
             >
               <input type="hidden" name="form-name" value={FORM_NAME} />
-              <p className="hidden" hidden>
+              <p className="hidden" style={{ display: "none" }}>
                 <label>
                   Não preencha este campo: 
                   <input
                     name="bot-field"
                     tabIndex={-1}
                     autoComplete="off"
-                    onChange={(e) => (honeypot.current = e.target.value)}
                   />
                 </label>
               </p>
+
+              {step === 2 ? (
+                <>
+                  <input type="hidden" name="nome" value={data.nome.trim()} />
+                  <input type="hidden" name="whatsapp" value={data.whatsapp} />
+                  <input type="hidden" name="idade" value={data.idade} />
+                </>
+              ) : null}
 
               {step === 1 ? (
                 <>
@@ -377,7 +390,8 @@ export function LeadForm() {
                   </button>
                 ) : null}
                 <button
-                  type="submit"
+                  type={step === 1 ? "button" : "submit"}
+                  onClick={step === 1 ? () => handleContinue() : undefined}
                   disabled={submitting}
                   className="inline-flex min-h-[48px] flex-1 items-center justify-center gap-3 rounded-full bg-ink px-7 text-[0.74rem] uppercase tracking-[0.16em] text-cream transition-colors hover:bg-bronze disabled:opacity-70"
                 >
