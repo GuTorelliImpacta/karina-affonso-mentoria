@@ -20,7 +20,7 @@ export function Hero() {
           <div className="mt-9">
             <CtaButton>Quero começar minha transformação</CtaButton>
           </div>
-          <p className="mt-8 text-[0.72rem] uppercase tracking-[0.2em] text-bronze">
+          <p className="mt-8 text-[0.72rem] uppercase tracking-[0.2em] text-bronze-ink">
             Body • Mind • Spirit — @ka.affonso
           </p>
         </div>

@@ -126,7 +126,7 @@ export function LeadForm() {
                 style={{ width: `${progress}%` }}
               />
             </div>
-            <p className="mt-2 text-[0.68rem] uppercase tracking-[0.18em] text-bronze">
+            <p className="mt-2 text-[0.68rem] uppercase tracking-[0.18em] text-bronze-ink">
               {sent ? "Concluído" : `Etapa ${step} de 2`}
             </p>
           </div>

@@ -25,7 +25,7 @@ export function Stories() {
     <Section id="transformacoes" tone="sand">
       <SectionHeading eyebrow="Transformações" title="Histórias reais." />
 
-      <p className="mt-4 text-center text-[0.7rem] uppercase tracking-[0.16em] text-bronze">
+      <p className="mt-4 text-center text-[0.7rem] uppercase tracking-[0.16em] text-bronze-ink">
         Exemplos ilustrativos — substituir por depoimentos reais autorizados
       </p>
 
@@ -46,7 +46,7 @@ export function Stories() {
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
               {story.quote}
             </p>
-            <p className="mt-5 text-[0.7rem] uppercase tracking-[0.18em] text-bronze">
+            <p className="mt-5 text-[0.7rem] uppercase tracking-[0.18em] text-bronze-ink">
               — {story.author}
             </p>
           </article>

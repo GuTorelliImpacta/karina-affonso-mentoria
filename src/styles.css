@@ -38,6 +38,7 @@
   --color-cream: var(--cream);
   --color-sand: var(--sand);
   --color-bronze: var(--bronze);
+  --color-bronze-ink: var(--bronze-ink);
   --color-olive: var(--olive);
   --color-ink: var(--ink);
   --font-display: "Cormorant Garamond", "Playfair Display", Georgia, serif;
@@ -51,6 +52,7 @@
   --cream: oklch(0.964 0.014 80.5); /* #F6F1EA */
   --sand: oklch(0.928 0.021 76.5); /* #EFE7DC */
   --bronze: oklch(0.646 0.055 61.5); /* #B08D6E */
+  --bronze-ink: oklch(0.556 0.052 61.5); /* #96754F — texto AA sobre creme */
   --olive: oklch(0.643 0.043 128); /* #8A9A7B */
   --ink: oklch(0.208 0.003 60); /* #1C1B1A */
 
@@ -78,6 +80,11 @@
 @layer base {
   * {
     border-color: var(--color-border);
+  }
+
+  section[id],
+  [id] {
+    scroll-margin-top: 6rem;
   }
 
   html {
@@ -116,7 +123,7 @@
   font-size: 0.7rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--bronze);
+  color: var(--bronze-ink);
 }
 
 @utility display-xl {

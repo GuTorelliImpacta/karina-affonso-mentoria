@@ -38,7 +38,7 @@ export function HowItWorks() {
             >
               <span className="h-1.5 w-1.5 rounded-full bg-bronze" />
             </span>
-            <p className="text-[0.7rem] uppercase tracking-[0.2em] text-bronze">
+            <p className="text-[0.7rem] uppercase tracking-[0.2em] text-bronze-ink">
               Etapa {String(i + 1).padStart(2, "0")}
             </p>
             <h3 className="mt-2 text-2xl leading-snug text-foreground md:text-xl">
