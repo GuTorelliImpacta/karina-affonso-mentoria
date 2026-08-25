@@ -78,9 +78,10 @@ export function Header() {
             </ul>
           </nav>
 
-          <CtaButton className="hidden px-5 text-[0.7rem] md:inline-flex">
-            Começar
-          </CtaButton>
+          <span className="hidden md:block">
+            <CtaButton className="px-5 text-[0.7rem]">Começar</CtaButton>
+          </span>
+
 
           <button
             ref={burgerRef}
