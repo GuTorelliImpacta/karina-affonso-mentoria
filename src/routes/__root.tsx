@@ -122,6 +122,22 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        <form
+          name="triagem"
+          method="POST"
+          data-netlify="true"
+          netlify-honeypot="bot-field"
+          hidden
+        >
+          <input type="hidden" name="form-name" value="triagem" />
+          <input type="text" name="nome" />
+          <input type="tel" name="whatsapp" />
+          <input type="number" name="idade" />
+          <input type="text" name="objetivo" />
+          <input type="text" name="acompanhamentoAnterior" />
+          <input type="text" name="detalhes" />
+          <input type="text" name="bot-field" />
+        </form>
         {children}
         <Scripts />
       </body>
