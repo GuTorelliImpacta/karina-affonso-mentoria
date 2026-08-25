@@ -55,6 +55,17 @@ export function About() {
               </li>
             ))}
           </ul>
+
+          <a
+            href="https://www.instagram.com/ka.affonso"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-6 inline-flex min-h-[44px] items-center gap-2 text-[0.74rem] uppercase tracking-[0.16em] text-bronze-ink transition-colors hover:text-ink"
+          >
+            <InstagramIcon className="h-5 w-5 text-bronze" />
+            @ka.affonso
+          </a>
+
         </div>
       </div>
     </Section>
