@@ -120,7 +120,7 @@ export function LeadForm() {
   }
 
   function handleContinue(event?: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+    event?.preventDefault();
     if (checkStep(["nome", "whatsapp", "idade"])) setStep(2);
   }
 
@@ -204,7 +204,7 @@ export function LeadForm() {
               ref={formRef}
               name={FORM_NAME}
               method="POST"
-              action="/sucesso-triagem"
+              action="/"
               target="hidden-form-target"
               data-netlify="true"
               netlify-honeypot="bot-field"
