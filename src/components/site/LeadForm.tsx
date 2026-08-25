@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowIcon } from "./icons";
 
 /** WhatsApp oficial (DDI + DDD, sem símbolos). */
@@ -77,6 +77,15 @@ export function LeadForm() {
   const [sent, setSent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+  const iframeSubmitPending = useRef(false);
+  const redirectUrl = useRef("");
+  const redirectTimer = useRef<number | undefined>(undefined);
+
+  useEffect(() => {
+    return () => {
+      if (redirectTimer.current) window.clearTimeout(redirectTimer.current);
+    };
+  }, []);
 
   const set = (key: keyof FormState) => (value: string) => {
     setData((d) => ({ ...d, [key]: value }));
@@ -143,14 +152,26 @@ export function LeadForm() {
     const formDataAtual = { ...data };
     console.log("Formulário submetido:", formDataAtual);
     setSubmitting(true);
+    iframeSubmitPending.current = true;
+    redirectUrl.current = buildWhatsAppUrl(formDataAtual);
 
-    window.setTimeout(() => {
-      setSent(true);
-    }, 150);
+    redirectTimer.current = window.setTimeout(() => {
+      finishSubmitFlow();
+    }, 3500);
+  }
 
+  function finishSubmitFlow() {
+    if (!iframeSubmitPending.current) return;
+    iframeSubmitPending.current = false;
+    if (redirectTimer.current) window.clearTimeout(redirectTimer.current);
+    setSent(true);
     window.setTimeout(() => {
-      window.location.href = buildWhatsAppUrl(formDataAtual);
-    }, 1200);
+      window.location.href = redirectUrl.current;
+    }, 500);
+  }
+
+  function handleIframeLoad() {
+    finishSubmitFlow();
   }
 
   const progress = sent ? 100 : step === 1 ? 50 : 90;
@@ -163,6 +184,7 @@ export function LeadForm() {
         className="hidden"
         aria-hidden="true"
         tabIndex={-1}
+        onLoad={handleIframeLoad}
       />
       <div className="section-shell">
         <div className="mx-auto w-full max-w-[560px] rounded-sm bg-card p-7 shadow-editorial sm:p-10">
