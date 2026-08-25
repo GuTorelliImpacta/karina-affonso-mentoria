@@ -130,13 +130,17 @@ function RootShell({ children }: { children: ReactNode }) {
           hidden
         >
           <input type="hidden" name="form-name" value="triagem" />
+          <p className="hidden" hidden>
+            <label>
+              Não preencha este campo: <input name="bot-field" />
+            </label>
+          </p>
           <input type="text" name="nome" />
           <input type="tel" name="whatsapp" />
           <input type="number" name="idade" />
           <input type="text" name="objetivo" />
           <input type="text" name="acompanhamentoAnterior" />
           <input type="text" name="detalhes" />
-          <input type="text" name="bot-field" />
         </form>
         {children}
         <Scripts />
