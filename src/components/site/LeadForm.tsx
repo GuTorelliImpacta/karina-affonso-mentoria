@@ -93,11 +93,15 @@ export function LeadForm() {
   const blur = (key: keyof FormState) => () =>
     setErrors((e) => ({ ...e, [key]: validateField(key, data) }));
 
-  const waLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-    `Olá! Meu nome é ${data.nome.trim()} e meu objetivo é: ${data.objetivo}.${
-      data.detalhes.trim() ? ` Sobre o meu objetivo: ${data.detalhes.trim()}` : ""
-    }`,
-  )}`;
+  function buildWhatsAppUrl(formData: FormState) {
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+      `Olá! Meu nome é ${formData.nome.trim()} e meu objetivo é: ${formData.objetivo}.${
+        formData.detalhes.trim() ? ` Sobre o meu objetivo: ${formData.detalhes.trim()}` : ""
+      }`,
+    )}`;
+  }
+
+  const waLink = buildWhatsAppUrl(data);
 
   function focusFirstInvalid(keys: (keyof FormState)[]) {
     const first = keys[0];
@@ -122,23 +126,26 @@ export function LeadForm() {
     return invalid.length === 0;
   }
 
-  async function persistLead() {
+  async function persistLead(formData: FormState) {
     // Captura nativa do deploy (Netlify Forms) — sem backend próprio.
-    const body = encode({
-      "form-name": FORM_NAME,
-      nome: data.nome.trim(),
-      whatsapp: data.whatsapp,
-      idade: data.idade,
-      objetivo: data.objetivo,
-      acompanhamentoAnterior: data.acompanhamentoAnterior,
-      detalhes: data.detalhes.trim(),
-      "bot-field": "",
-    });
-    await fetch("/", {
+    const response = await fetch("/", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body,
+      body: encode({
+        "form-name": FORM_NAME,
+        "bot-field": "",
+        nome: formData.nome.trim(),
+        whatsapp: formData.whatsapp,
+        idade: formData.idade,
+        objetivo: formData.objetivo,
+        acompanhamentoAnterior: formData.acompanhamentoAnterior,
+        detalhes: formData.detalhes.trim(),
+      }),
     });
+
+    if (!response.ok) {
+      console.error("Netlify respondeu com erro:", response.status);
+    }
   }
 
   async function handleSubmit(event: React.FormEvent) {
@@ -157,17 +164,17 @@ export function LeadForm() {
       return;
     }
 
+    const formData = { ...data };
     setSubmitting(true);
-    const link = waLink;
     try {
-      await persistLead();
+      await persistLead(formData);
     } catch (error) {
       console.error("Falha ao registrar lead na Netlify:", error);
       // O contato importa mais que o registro: segue para o WhatsApp.
     }
     setSent(true);
     window.setTimeout(() => {
-      window.location.href = link;
+      window.location.href = buildWhatsAppUrl(formData);
     }, 1500);
   }
 
@@ -222,11 +229,10 @@ export function LeadForm() {
               className="mt-8 space-y-5"
             >
               <input type="hidden" name="form-name" value={FORM_NAME} />
-              <p className="hidden" aria-hidden="true">
+              <p className="hidden" hidden>
                 <label>
-                  Não preencha este campo
+                  Não preencha este campo: 
                   <input
-                    type="text"
                     name="bot-field"
                     tabIndex={-1}
                     autoComplete="off"
