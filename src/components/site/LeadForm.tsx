@@ -1,13 +1,11 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ArrowIcon } from "./icons";
 
 /** WhatsApp oficial (DDI + DDD, sem símbolos). */
 const WHATSAPP_NUMBER = "5511999708185";
 
-/**
- * TODO (integração futura): persistir o lead antes do redirecionamento
- * (Lovable Cloud ou webhook). Não implementado — aguardando destino/dados.
- */
+/** Nome do form usado pela captura nativa do deploy (Netlify Forms). */
+const FORM_NAME = "triagem-karina";
 
 type FormState = {
   nome: string;
@@ -36,13 +34,37 @@ const empty: FormState = {
   detalhes: "",
 };
 
-
 /** Máscara brasileira (00) 00000-0000 */
 function maskPhone(value: string) {
   const d = value.replace(/\D/g, "").slice(0, 11);
   if (d.length <= 2) return d.length ? `(${d}` : "";
   if (d.length <= 7) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
   return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+}
+
+function validateField(key: keyof FormState, data: FormState): string | undefined {
+  switch (key) {
+    case "nome":
+      return data.nome.trim().length < 3
+        ? "Informe seu nome completo (mínimo 3 caracteres)."
+        : undefined;
+    case "whatsapp":
+      return data.whatsapp.replace(/\D/g, "").length < 11
+        ? "Informe um WhatsApp válido com DDD — (00) 00000-0000."
+        : undefined;
+    case "idade": {
+      const idade = Number(data.idade);
+      return !data.idade || Number.isNaN(idade) || idade < 14 || idade > 99
+        ? "Informe uma idade entre 14 e 99 anos."
+        : undefined;
+    }
+    case "objetivo":
+      return data.objetivo ? undefined : "Selecione seu objetivo principal.";
+    case "acompanhamentoAnterior":
+      return data.acompanhamentoAnterior ? undefined : "Selecione uma opção.";
+    default:
+      return undefined;
+  }
 }
 
 const fieldClass =
@@ -53,11 +75,17 @@ export function LeadForm() {
   const [data, setData] = useState<FormState>(empty);
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const honeypot = useRef("");
+  const formRef = useRef<HTMLFormElement>(null);
 
   const set = (key: keyof FormState) => (value: string) => {
     setData((d) => ({ ...d, [key]: value }));
     setErrors((e) => ({ ...e, [key]: undefined }));
   };
+
+  const blur = (key: keyof FormState) => () =>
+    setErrors((e) => ({ ...e, [key]: validateField(key, data) }));
 
   const waLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
     `Olá! Meu nome é ${data.nome.trim()} e meu objetivo é: ${data.objetivo}.${
@@ -65,38 +93,71 @@ export function LeadForm() {
     }`,
   )}`;
 
-
-  function validateStep1() {
-    const e: Partial<Record<keyof FormState, string>> = {};
-    if (data.nome.trim().length < 2) e.nome = "Informe seu nome completo.";
-    if (data.whatsapp.replace(/\D/g, "").length < 10)
-      e.whatsapp = "Informe um WhatsApp válido com DDD.";
-    const idade = Number(data.idade);
-    if (!data.idade || Number.isNaN(idade) || idade < 12 || idade > 110)
-      e.idade = "Informe sua idade.";
-    setErrors(e);
-    return Object.keys(e).length === 0;
+  function focusFirstInvalid(keys: (keyof FormState)[]) {
+    const first = keys[0];
+    if (!first) return;
+    const el = formRef.current?.querySelector<HTMLElement>(`[name="${first}"]`);
+    el?.scrollIntoView({ behavior: "smooth", block: "center" });
+    el?.focus({ preventScroll: true });
   }
 
-  function validateStep2() {
+  function checkStep(keys: (keyof FormState)[]) {
     const e: Partial<Record<keyof FormState, string>> = {};
-    if (!data.objetivo) e.objetivo = "Selecione seu objetivo principal.";
-    if (!data.acompanhamentoAnterior)
-      e.acompanhamentoAnterior = "Selecione uma opção.";
+    const invalid: (keyof FormState)[] = [];
+    for (const key of keys) {
+      const message = validateField(key, data);
+      if (message) {
+        e[key] = message;
+        invalid.push(key);
+      }
+    }
     setErrors(e);
-    return Object.keys(e).length === 0;
+    if (invalid.length) focusFirstInvalid(invalid);
+    return invalid.length === 0;
   }
 
-  function handleSubmit(event: React.FormEvent) {
+  async function persistLead() {
+    // Captura nativa do deploy (Netlify Forms) — sem backend próprio.
+    const body = new URLSearchParams({
+      "form-name": FORM_NAME,
+      nome: data.nome.trim(),
+      whatsapp: data.whatsapp,
+      idade: data.idade,
+      objetivo: data.objetivo,
+      acompanhamentoAnterior: data.acompanhamentoAnterior,
+      detalhes: data.detalhes.trim(),
+    });
+    await fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: body.toString(),
+    });
+  }
+
+  async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
+    if (submitting) return;
+
     if (step === 1) {
-      if (validateStep1()) setStep(2);
+      if (checkStep(["nome", "whatsapp", "idade"])) setStep(2);
       return;
     }
-    if (!validateStep2()) return;
+    if (!checkStep(["objetivo", "acompanhamentoAnterior"])) return;
 
-    setSent(true);
+    // Honeypot: descarta silenciosamente envios automatizados.
+    if (honeypot.current.trim()) {
+      setSent(true);
+      return;
+    }
+
+    setSubmitting(true);
     const link = waLink;
+    try {
+      await persistLead();
+    } catch {
+      // O contato importa mais que o registro: segue para o WhatsApp.
+    }
+    setSent(true);
     window.setTimeout(() => {
       window.location.href = link;
     }, 1500);
@@ -117,8 +178,6 @@ export function LeadForm() {
             me ajudam a entender se a mentoria é para você.
           </p>
 
-
-
           <div className="mt-7" aria-hidden="true">
             <div className="h-[3px] w-full rounded-full bg-sand">
               <div
@@ -126,7 +185,7 @@ export function LeadForm() {
                 style={{ width: `${progress}%` }}
               />
             </div>
-            <p className="mt-2 text-[0.68rem] uppercase tracking-[0.18em] text-bronze">
+            <p className="mt-2 text-[0.68rem] uppercase tracking-[0.18em] text-bronze-ink">
               {sent ? "Concluído" : `Etapa ${step} de 2`}
             </p>
           </div>
@@ -142,11 +201,32 @@ export function LeadForm() {
               >
                 Abrir WhatsApp
               </a>
-
-
             </div>
           ) : (
-            <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-5">
+            <form
+              ref={formRef}
+              name={FORM_NAME}
+              method="POST"
+              data-netlify="true"
+              netlify-honeypot="empresa-site"
+              onSubmit={handleSubmit}
+              noValidate
+              className="mt-8 space-y-5"
+            >
+              <input type="hidden" name="form-name" value={FORM_NAME} />
+              <p className="hidden" aria-hidden="true">
+                <label>
+                  Não preencha este campo
+                  <input
+                    type="text"
+                    name="empresa-site"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    onChange={(e) => (honeypot.current = e.target.value)}
+                  />
+                </label>
+              </p>
+
               {step === 1 ? (
                 <>
                   <Field label="Nome completo" error={errors.nome} htmlFor="nome">
@@ -156,8 +236,10 @@ export function LeadForm() {
                       autoComplete="name"
                       className={fieldClass}
                       placeholder="Seu nome"
+                      aria-invalid={!!errors.nome}
                       value={data.nome}
                       onChange={(e) => set("nome")(e.target.value)}
+                      onBlur={blur("nome")}
                     />
                   </Field>
                   <Field label="WhatsApp" error={errors.whatsapp} htmlFor="whatsapp">
@@ -168,8 +250,10 @@ export function LeadForm() {
                       autoComplete="tel"
                       className={fieldClass}
                       placeholder="(00) 00000-0000"
+                      aria-invalid={!!errors.whatsapp}
                       value={data.whatsapp}
                       onChange={(e) => set("whatsapp")(maskPhone(e.target.value))}
+                      onBlur={blur("whatsapp")}
                     />
                   </Field>
                   <Field label="Idade" error={errors.idade} htmlFor="idade">
@@ -179,15 +263,22 @@ export function LeadForm() {
                       inputMode="numeric"
                       className={fieldClass}
                       placeholder="00"
+                      aria-invalid={!!errors.idade}
                       value={data.idade}
                       onChange={(e) =>
                         set("idade")(e.target.value.replace(/\D/g, "").slice(0, 3))
                       }
+                      onBlur={blur("idade")}
                     />
                   </Field>
                 </>
               ) : (
                 <>
+                  <p className="rounded-sm bg-sand/70 px-4 py-3 text-xs leading-relaxed text-muted-foreground">
+                    Ao enviar, você será direcionada ao WhatsApp da equipe para
+                    continuar a conversa.
+                  </p>
+
                   <Field
                     label="Qual é o seu objetivo principal?"
                     error={errors.objetivo}
@@ -197,8 +288,10 @@ export function LeadForm() {
                       id="objetivo"
                       name="objetivo"
                       className={fieldClass}
+                      aria-invalid={!!errors.objetivo}
                       value={data.objetivo}
                       onChange={(e) => set("objetivo")(e.target.value)}
+                      onBlur={blur("objetivo")}
                     >
                       <option value="">Selecione</option>
                       {objetivos.map((o) => (
@@ -236,7 +329,7 @@ export function LeadForm() {
                       ))}
                     </div>
                     {errors.acompanhamentoAnterior ? (
-                      <p className="mt-2 text-xs text-destructive" role="alert">
+                      <p className="mt-2 text-xs text-bronze-ink" role="alert">
                         {errors.acompanhamentoAnterior}
                       </p>
                     ) : null}
@@ -256,7 +349,6 @@ export function LeadForm() {
                       onChange={(e) => set("detalhes")(e.target.value)}
                     />
                   </Field>
-
                 </>
               )}
 
@@ -272,9 +364,14 @@ export function LeadForm() {
                 ) : null}
                 <button
                   type="submit"
-                  className="inline-flex min-h-[48px] flex-1 items-center justify-center gap-3 rounded-full bg-ink px-7 text-[0.74rem] uppercase tracking-[0.16em] text-cream transition-colors hover:bg-bronze"
+                  disabled={submitting}
+                  className="inline-flex min-h-[48px] flex-1 items-center justify-center gap-3 rounded-full bg-ink px-7 text-[0.74rem] uppercase tracking-[0.16em] text-cream transition-colors hover:bg-bronze disabled:opacity-70"
                 >
-                  {step === 1 ? "Continuar" : "Enviar e falar com a equipe"}
+                  {submitting
+                    ? "Enviando..."
+                    : step === 1
+                      ? "Continuar"
+                      : "Enviar e falar com a equipe"}
                   <ArrowIcon />
                 </button>
               </div>
@@ -312,7 +409,7 @@ function Field({
       </label>
       {children}
       {error ? (
-        <p className="mt-2 text-xs text-destructive" role="alert">
+        <p className="mt-2 text-xs text-bronze-ink" role="alert">
           {error}
         </p>
       ) : null}

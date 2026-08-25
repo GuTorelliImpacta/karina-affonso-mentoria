@@ -1,5 +1,6 @@
 import { Section } from "./primitives";
 import { Portrait } from "./Portrait";
+import { InstagramIcon } from "./icons";
 
 const credenciais = [
 
@@ -15,10 +16,12 @@ export function About() {
     <Section id="sobre">
       <div className="grid items-center gap-12 md:grid-cols-[0.85fr_1fr] md:gap-16">
         <Portrait
-          src="/karina2.png"
+          src="/karina2.webp"
           alt="Karina Affonso em treino de canoagem, movimento e estilo de vida"
           className="mx-auto max-w-sm"
           objectPosition="center 30%"
+          width={449}
+          height={459}
           grayscale
         />
 
@@ -53,6 +56,17 @@ export function About() {
               </li>
             ))}
           </ul>
+
+          <a
+            href="https://www.instagram.com/ka.affonso"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-6 inline-flex min-h-[44px] items-center gap-2 text-[0.74rem] uppercase tracking-[0.16em] text-bronze-ink transition-colors hover:text-ink"
+          >
+            <InstagramIcon className="h-5 w-5 text-bronze" />
+            @ka.affonso
+          </a>
+
         </div>
       </div>
     </Section>

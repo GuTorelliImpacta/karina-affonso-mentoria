@@ -1,4 +1,5 @@
 import { Divider } from "./primitives";
+import { InstagramIcon } from "./icons";
 
 export function Footer() {
   return (
@@ -19,11 +20,12 @@ export function Footer() {
         </div>
 
         <a
-          href="https://instagram.com/ka.affonso"
+          href="https://www.instagram.com/ka.affonso"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex min-h-[44px] items-center text-[0.72rem] uppercase tracking-[0.18em] text-cream/85 transition-colors hover:text-bronze"
+          className="inline-flex min-h-[44px] items-center gap-2 text-[0.72rem] uppercase tracking-[0.18em] text-cream/85 transition-colors hover:text-bronze"
         >
+          <InstagramIcon className="h-5 w-5 text-bronze" />
           Instagram @ka.affonso
         </a>
 
